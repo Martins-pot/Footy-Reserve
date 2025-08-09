@@ -33,7 +33,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.mertswork.footyreserve.core.presentation.BackgroundBlue
 import com.mertswork.footyreserve.home.presentation.main.HomeScreen
-import com.mertswork.footyreserve.navigation.Screen
+import com.mertswork.footyreserve.core.presentation.navigation.Screen
 import com.mertswork.footyreserve.notifications.presentation.NotificationsScreen
 import com.mertswork.footyreserve.ui.theme.FootyReserveTheme
 import footyreserve.composeapp.generated.resources.Res

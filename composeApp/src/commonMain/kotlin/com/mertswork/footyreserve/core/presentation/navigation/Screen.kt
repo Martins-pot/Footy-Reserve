@@ -1,4 +1,4 @@
-package com.mertswork.footyreserve.core.presentation.screens
+package com.mertswork.footyreserve.core.presentation.navigation
 
 sealed class Screen(val route: String) {
     object Home : Screen("home")

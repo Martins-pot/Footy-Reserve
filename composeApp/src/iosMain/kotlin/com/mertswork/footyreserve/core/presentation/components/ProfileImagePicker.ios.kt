@@ -18,6 +18,7 @@ import kotlinx.cinterop.*
 import coil3.compose.AsyncImage
 
 
+@OptIn(ExperimentalForeignApi::class)
 @Composable
 actual fun ProfileImagePicker(
     imageUri: String?,
@@ -71,21 +72,66 @@ actual fun ProfileImagePicker(
     }
 }
 
+@OptIn(ExperimentalForeignApi::class)
 private suspend fun presentImagePicker(onImageSelected: (String?) -> Unit) {
-    // Create PHPickerConfiguration
     val configuration = PHPickerConfiguration()
     configuration.selectionLimit = 1
     configuration.filter = PHPickerFilter.imagesFilter
 
-    // Create picker controller
     val picker = PHPickerViewController(configuration)
+    val delegate = IOSImagePickerDelegate(onImageSelected)
+    picker.delegate = delegate
 
-    // Set up delegate - this is a simplified version
-    // In a real implementation, you'd need to create a proper delegate
-    // that handles the picker results and converts to URI
+    // Get the root view controller and present
+    val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
+    rootViewController?.presentViewController(picker, true, null)
+}
 
-    // For now, return null as placeholder
-    // You'll need to implement the actual picker presentation logic
-    // using UIKit interop and delegates
-    onImageSelected(null)
+@OptIn(ExperimentalForeignApi::class)
+class IOSImagePickerDelegate(
+    private val onImageSelected: (String?) -> Unit
+) : NSObject(), PHPickerViewControllerDelegateProtocol {
+
+    override fun picker(picker: PHPickerViewController, didFinishPicking: List<*>) {
+        picker.dismissViewControllerAnimated(true, null)
+
+        val results = didFinishPicking.filterIsInstance<PHPickerResult>()
+        if (results.isEmpty()) {
+            onImageSelected(null)
+            return
+        }
+
+        val result = results.first()
+        val itemProvider = result.itemProvider
+
+        if (itemProvider.canLoadObjectOfClass(UIImage)) {
+            itemProvider.loadObjectOfClass(UIImage) { image, error ->
+                if (error == null && image is UIImage) {
+                    // Save image to temporary file
+                    val tempUrl = saveImageToTempFile(image)
+                    onImageSelected(tempUrl)
+                } else {
+                    onImageSelected(null)
+                }
+            }
+        } else {
+            onImageSelected(null)
+        }
+    }
+
+    private fun saveImageToTempFile(image: UIImage): String? {
+        return try {
+            val imageData = UIImageJPEGRepresentation(image, 0.8) ?: return null
+            val tempDir = NSTemporaryDirectory()
+            val fileName = "temp_image_${NSUUID().UUIDString}.jpg"
+            val filePath = "$tempDir$fileName"
+            val fileUrl = NSURL.fileURLWithPath(filePath)
+
+            val success = imageData.writeToURL(fileUrl, true)
+            if (success) filePath else null
+        } catch (e: Exception) {
+            println("Error saving temp image: ${e.message}")
+            null
+        }
+    }
 }

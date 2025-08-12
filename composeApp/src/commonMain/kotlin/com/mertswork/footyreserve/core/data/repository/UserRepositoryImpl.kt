@@ -22,34 +22,73 @@ class UserRepositoryImpl(
     private val httpClient: HttpClient
 ) : UserRepository {
 
+//    override suspend fun registerUser(userInfo: UserRegistration): ApiResponse<UserData> {
+//        // Get image bytes first (inside coroutine)
+//        val imageBytes = userInfo.imageUri?.let { uri ->
+//            getImageBytes(uri)
+//        }
+//
+//        val response = httpClient.submitFormWithBinaryData(
+//            url = "https://footy-reserve-api.onrender.com/user/signup",
+//            formData = formData {
+//                append("firstName", userInfo.firstName)
+//                append("lastName", userInfo.lastName)
+//                append("email", userInfo.email)
+//                append("password", userInfo.password)
+//                append("country", userInfo.country)
+//
+//                imageBytes?.let {
+//                    append("file", it, Headers.build {
+//                        append(HttpHeaders.ContentType, "image/*")
+//                        append(HttpHeaders.ContentDisposition, "filename=\"profile.jpg\"")
+//                    })
+//                }
+//            }
+//        )
+//
+//        return response.body()
+//    }
+
     override suspend fun registerUser(userInfo: UserRegistration): ApiResponse<UserData> {
-        // Get image bytes first (inside coroutine)
-        val imageBytes = userInfo.imageUri?.let { uri ->
-            getImageBytes(uri)
-        }
-
-        val response = httpClient.submitFormWithBinaryData(
-            url = "https://footy-reserve-api.onrender.com/user/signup",
-            formData = formData {
-                append("firstName", userInfo.firstName)
-                append("lastName", userInfo.lastName)
-                append("email", userInfo.email)
-                append("password", userInfo.password)
-                append("country", userInfo.country)
-
-                imageBytes?.let {
-                    append("image", it, Headers.build {
-                        append(HttpHeaders.ContentType, "image/*")
-                        append(HttpHeaders.ContentDisposition, "filename=\"profile.jpg\"")
-                    })
+        return try {
+            val imageData = userInfo.imageUri?.let { uri ->
+                try {
+                    getCompressedImageData(uri)
+                } catch (e: Exception) {
+                    println("Error processing image: ${e.message}")
+                    null
                 }
             }
-        )
 
-        return response.body()
+            val response = httpClient.submitFormWithBinaryData(
+                url = "https://footy-reserve-api.onrender.com/user/signup",
+                formData = formData {
+                    append("firstName", userInfo.firstName)
+                    append("lastName", userInfo.lastName)
+                    append("email", userInfo.email)
+                    append("password", userInfo.password)
+                    append("country", userInfo.country)
+
+                    imageData?.takeIf { it.isNotEmpty() }?.let {
+                        append("file", it, Headers.build {
+                            append(HttpHeaders.ContentType, "image/jpeg")
+                            append(HttpHeaders.ContentDisposition, "filename=\"profile.jpg\"")
+                        })
+                    }
+                }
+            )
+
+            response.body()
+        } catch (e: Exception) {
+            println("Registration error: ${e.message}")
+            throw Exception("Registration failed: ${e.message}")
+        }
     }
 
+}
 
+// Updated expect function for compressed image data
+expect suspend fun getCompressedImageData(uri: String): ByteArray
 
 //    @OptIn(ExperimentalEncodingApi::class)
 //    override suspend fun registerUser(userInfo: UserRegistration): ApiResponse<UserData> {
@@ -105,7 +144,7 @@ class UserRepositoryImpl(
 //
 //        return response.body()
 //    }
-}
+
 
 // This should be implemented in platform-specific modules
 expect suspend fun getImageBytes(uri: String): ByteArray

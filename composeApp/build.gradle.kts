@@ -55,6 +55,8 @@ kotlin {
             implementation(libs.ktor.client.android)
             implementation(libs.coil.kt.coil.compose)
             implementation(libs.androidx.activity.compose.v182)
+
+            implementation(libs.androidx.security.crypto)
         }
         commonMain.dependencies {
             implementation(compose.runtime)

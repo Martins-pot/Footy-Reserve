@@ -15,8 +15,12 @@ import com.mertswork.footyreserve.app.App
 import com.mertswork.footyreserve.core.presentation.BackgroundBlue
 import com.mertswork.footyreserve.core.presentation.navigation.Screen
 import com.mertswork.footyreserve.core.presentation.screens.RegistrationScreen
+import com.mertswork.footyreserve.di.initKoin
+import com.mertswork.footyreserve.di.platforModule
+import com.mertswork.footyreserve.di.sharedModule
 import com.mertswork.footyreserve.di.utils.AppModule
 import com.mertswork.footyreserve.home.presentation.main.HomeScreen
+import org.koin.android.ext.koin.androidContext
 
 
 class MainActivity : ComponentActivity() {
@@ -34,8 +38,9 @@ class MainActivity : ComponentActivity() {
             )
         )
         setContent {
-            App()
+            App() // No KoinApplication wrapper needed
         }
+    }
 
 //                val navController = rememberNavController()
 //                val registrationViewModel = remember {
@@ -73,5 +78,5 @@ class MainActivity : ComponentActivity() {
 
     
 
-}
+
 

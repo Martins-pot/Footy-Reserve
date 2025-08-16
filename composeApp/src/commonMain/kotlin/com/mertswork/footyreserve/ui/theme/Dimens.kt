@@ -23,4 +23,9 @@ object Dimens {
     val SmallPadding = 4.dp
     val MediumPadding = 8.dp
     val LargePadding = 16.dp
+
+//    constants
+    val backButton = 36.dp
+    val textInput = 14.sp
+    val eyeSize = 24.dp
 }

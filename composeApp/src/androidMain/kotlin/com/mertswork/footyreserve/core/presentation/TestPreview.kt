@@ -1,4 +1,4 @@
-package com.mertswork.footyreserve.notifications.presentation
+package com.mertswork.footyreserve.core.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
@@ -10,9 +10,8 @@ import com.mertswork.footyreserve.core.presentation.screens.RegistrationScreen
 import com.mertswork.footyreserve.di.utils.AppModule
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-import org.koin.compose.koinInject
 
-@Preview
+@Preview()
 @Composable
 fun NotificationsScreen() {
 //    val imagePicker: ImagePicker = koinInject()
@@ -20,19 +19,22 @@ fun NotificationsScreen() {
 
 
     val navController = rememberNavController()
-                val registrationViewModel = remember {
-                    AppModule.provideRegistrationViewModel()
-                }
-
+    val registrationViewModel = remember {
+        AppModule.provideRegistrationViewModel()
+    }
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("⚙️ Notifications")
         RegistrationScreen(
-                            registrationViewModel = registrationViewModel,
-                            onNavigateBack = {
-                                navController.popBackStack()
-                            },
-                            onRegistrationSuccess = {
-                                navController.popBackStack()
-                                // Or navigate to another screen
-                            }
-                        )
+            registrationViewModel = registrationViewModel,
+            onNavigateBack = {
+                navController.popBackStack()
+            },
+            onRegistrationSuccess = {
+                navController.popBackStack()
+                // Or navigate to another screen
+            }
+        )
 //        RegisterScreen(imagePicker = imagePicker, viewModel = viewModel)
     }
+}
+

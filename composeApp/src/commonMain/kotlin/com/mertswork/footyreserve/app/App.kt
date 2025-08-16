@@ -35,8 +35,11 @@ import com.mertswork.footyreserve.core.domain.manager.UserManager
 import com.mertswork.footyreserve.core.presentation.BackgroundBlue
 import com.mertswork.footyreserve.home.presentation.main.HomeScreen
 import com.mertswork.footyreserve.core.presentation.navigation.Screen
+import com.mertswork.footyreserve.core.presentation.screens.MainScreen
+import com.mertswork.footyreserve.core.presentation.screens.WelcomeScreen
 import com.mertswork.footyreserve.di.platforModule
 import com.mertswork.footyreserve.di.sharedModule
+import com.mertswork.footyreserve.home.presentation.main.components.TopItem
 import com.mertswork.footyreserve.notifications.presentation.NotificationsScreen
 import com.mertswork.footyreserve.profile.presentation.ProfileScreen
 import com.mertswork.footyreserve.ui.theme.FootyReserveTheme
@@ -65,142 +68,34 @@ data class BottomNavigationItem(
 @Composable
 fun App() {
     val userManager: UserManager = koinInject()
+    val currentUser by userManager.currentUser.collectAsState()
+    val isLoggedIn by userManager.isLoggedIn.collectAsState()
 
+    val navController = rememberNavController()
     // Initialize user manager when app starts
     LaunchedEffect(Unit) {
         userManager.initialize()
     }
 
+
     FootyReserveTheme {
-
-
-            val navController = rememberNavController()
-            val items = listOf(
-                BottomNavigationItem(
-                    title = "Home",
-                    selectedIcon = painterResource(Res.drawable.selected_home),
-                    unselectedIcon = painterResource(Res.drawable.unselected_home),
-                    hasNews = false,
-                ),
-                BottomNavigationItem(
-                    title = "Notifications",
-                    selectedIcon = painterResource(Res.drawable.selected_notifications),
-                    unselectedIcon = painterResource(Res.drawable.unselected_notifications),
-                    hasNews = false,
-                    badgeCount = 15
-                ),
-                BottomNavigationItem(
-                    title = "Profile",
-                    selectedIcon = painterResource(Res.drawable.selected_profile),
-                    unselectedIcon = painterResource(Res.drawable.unselected_profile),
-                    hasNews = true,
+        NavHost(
+            navController = navController,
+            startDestination = if (isLoggedIn && currentUser != null) "main/home" else "welcome"
+        ) {
+            composable("welcome") {
+                WelcomeScreen(
+                    loginClick = { navController.navigate("main/profile") },
+                    registerClick = { navController.navigate("main/notifications") }
                 )
-            )
-            var selectedItemIndex by rememberSaveable {
-                mutableStateOf(0)
             }
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(BackgroundBlue)
-            ) {
-                Scaffold(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    containerColor = BackgroundBlue,
-
-                    bottomBar = {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(100.dp) // Set to your desired nav bar height
-                        ) {
-                            // Background Image
-                            Image(
-                                painter = painterResource(Res.drawable.nav_bg), // Use resource for KMP
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .fillMaxSize()
-//                        .clip(RoundedCornerShape(topStart = 44.dp, topEnd = 44.dp))
-                                ,
-                                contentScale = ContentScale.FillWidth
-                            )
-
-                            // Navigation Bar Items on top of the image
-                            NavigationBar(
-                                containerColor = Color.Transparent,
-                                tonalElevation = 0.dp,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(topStart = 44.dp, topEnd = 44.dp))
-                            ) {
-                                items.forEachIndexed { index, item ->
-                                    val isSelected =
-                                        navController.currentDestination?.route == item.title.lowercase()
-
-                                    NavigationBarItem(
-                                        selected = isSelected,
-                                        onClick = {
-                                            selectedItemIndex = index
-//                            navController.navigate(item.title)
-                                            navController.navigate(item.title.lowercase()) {
-                                                launchSingleTop = true
-                                                restoreState = true
-                                                popUpTo(navController.graph.startDestinationId) {
-                                                    saveState = true
-                                                }
-                                            }
-                                        },
-                                        label = {
-                                            Text(text = item.title)
-                                        },
-                                        alwaysShowLabel = false,
-                                        icon = {
-                                            BadgedBox(
-                                                badge = {
-                                                    if (item.badgeCount != null) {
-                                                        Badge {
-                                                            Text(text = item.badgeCount.toString())
-                                                        }
-                                                    } else if (item.hasNews) {
-                                                        Badge()
-                                                    }
-                                                }
-                                            ) {
-                                                Image(
-                                                    painter = if (index == selectedItemIndex) {
-                                                        item.selectedIcon
-                                                    } else item.unselectedIcon,
-                                                    contentDescription = item.title,
-                                                    modifier = Modifier
-                                                        .sizeIn(60.dp, 60.dp, 70.dp, 70.dp)
-                                                )
-                                            }
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                    }
-                ) { paddingValues ->
-                    NavHost(
-                        navController = navController,
-                        startDestination = Screen.Home.route,
-                        modifier = Modifier
-                            .padding(paddingValues),
-
-                        ) {
-                        composable(Screen.Home.route) { HomeScreen() }
-                        composable(Screen.Notifications.route) { NotificationsScreen() }
-                        composable(Screen.Profile.route) { ProfileScreen(navController = navController) }
-                    }
-
-                }
+            composable("main/{tab}") { backStackEntry ->
+                val tab = backStackEntry.arguments?.getString("tab") ?: Screen.Home.route
+                MainScreen(startDestination = tab)
             }
-
         }
     }
-
+}
 
 
 

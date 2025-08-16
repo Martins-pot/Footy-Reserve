@@ -19,9 +19,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import com.mertswork.footyreserve.ui.theme.Dimens
+import footyreserve.composeapp.generated.resources.Res
+import footyreserve.composeapp.generated.resources.click_to_upload_image
+import footyreserve.composeapp.generated.resources.select_image
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 actual fun ProfileImagePicker(
@@ -38,10 +45,12 @@ actual fun ProfileImagePicker(
 
     Box(
         modifier = Modifier
-            .size(120.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .clickable { launcher.launch("image/*") },
+            .fillMaxWidth()
+            .height(150.dp)
+//            .clip(CircleShape)
+//            .background(MaterialTheme.colorScheme.surfaceVariant)
+//            .clickable { launcher.launch("image/*") }
+        ,
         contentAlignment = Alignment.Center
     ) {
         if (imageUri != null) {
@@ -49,7 +58,7 @@ actual fun ProfileImagePicker(
                 model = imageUri,
                 contentDescription = "Profile Image",
                 modifier = Modifier
-                    .fillMaxSize()
+                    .size(100.dp)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
@@ -57,16 +66,29 @@ actual fun ProfileImagePicker(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+            .clip(CircleShape)
+//            .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .clickable { launcher.launch("image/*") },
+                    contentAlignment = Alignment.Center
+                ) {
+                Image(
+                    painter = painterResource(Res.drawable.select_image),
                     contentDescription = "Add Photo",
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(32.dp)
+//                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(100.dp)
+                )
+                    }
+                Spacer(
+                    Modifier.height(14.dp)
                 )
                 Text(
-                    text = "Add Photo",
+                    text = stringResource(Res.string.click_to_upload_image),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary
+                    color = Color.White,
+                    fontSize = Dimens.Title
                 )
             }
         }

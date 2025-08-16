@@ -1,6 +1,7 @@
 package com.mertswork.footyreserve.core.presentation.components
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,10 +13,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import kotlinx.cinterop.*
 import coil3.compose.AsyncImage
+import com.mertswork.footyreserve.ui.theme.Dimens
+import footyreserve.composeapp.generated.resources.Res
+import footyreserve.composeapp.generated.resources.click_to_upload_image
+import footyreserve.composeapp.generated.resources.select_image
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 
 @OptIn(ExperimentalForeignApi::class)
@@ -28,10 +36,11 @@ actual fun ProfileImagePicker(
 
     Box(
         modifier = Modifier
-            .size(120.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .clickable { showImagePicker = true },
+            .fillMaxWidth()
+            .height(150.dp)
+//            .clip(CircleShape)
+//            .background(MaterialTheme.colorScheme.surfaceVariant)
+            ,
         contentAlignment = Alignment.Center
     ) {
         if (imageUri != null) {
@@ -39,24 +48,37 @@ actual fun ProfileImagePicker(
                 model = imageUri,
                 contentDescription = "Profile Image",
                 modifier = Modifier
-                    .fillMaxSize()
+                    .size(100.dp)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
-        } else {
+        }  else {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Photo",
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(32.dp)
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape)
+//            .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .clickable { showImagePicker = true },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(Res.drawable.select_image),
+                        contentDescription = "Add Photo",
+//                    tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(100.dp)
+                    )
+                }
+                Spacer(
+                    Modifier.height(14.dp)
                 )
                 Text(
-                    text = "Add Photo",
+                    text = stringResource(Res.string.click_to_upload_image),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary
+                    color = Color.White,
+                    fontSize = Dimens.Title
                 )
             }
         }

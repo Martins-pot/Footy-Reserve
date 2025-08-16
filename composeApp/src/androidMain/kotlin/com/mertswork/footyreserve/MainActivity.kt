@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -20,6 +21,8 @@ import com.mertswork.footyreserve.di.platforModule
 import com.mertswork.footyreserve.di.sharedModule
 import com.mertswork.footyreserve.di.utils.AppModule
 import com.mertswork.footyreserve.home.presentation.main.HomeScreen
+import com.mertswork.footyreserve.notifications.presentation.NotificationsScreen
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.android.ext.koin.androidContext
 
 
@@ -37,6 +40,7 @@ class MainActivity : ComponentActivity() {
                 Color.Transparent.toArgb()
             )
         )
+
         setContent {
             App() // No KoinApplication wrapper needed
         }
@@ -75,6 +79,9 @@ class MainActivity : ComponentActivity() {
 //            }
 //        }
     }
+
+
+
 
     
 

@@ -82,6 +82,8 @@ kotlin {
             implementation(libs.bundles.ktor)
             implementation(libs.bundles.coil)
             implementation(libs.kotlinx.coroutines.core)
+
+            implementation(libs.material.icons.extended)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

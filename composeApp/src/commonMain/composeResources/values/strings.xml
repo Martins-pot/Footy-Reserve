@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
-    //home strings
+<!--    //home strings-->
     <string name = "pfp">Profile picture</string>
     <string name = "user_placeholder">User</string>
     <string name = "search_icon">Search Icon</string>
     <string name = "view_all">View all</string>
     <string name = "upcoming_match">Upcoming Match</string>
     <string name = "greeting">Ready for your next game?</string>
+
+<!--    welcome screen-->
+    <string name = "welcome_to_footy_reserve">Welcome to FootyReserve</string>
+    <string name = "when_everyone_pays">When everyone pays before match day, it’s less hassle, less drama, and more football.</string>
+    <string name = "login">Login</string>
+    <string name = "get_started">Get Started</string>
+
+<!--    register screen-->
+    <string name = "click_to_upload_image">Click to upload image</string>
+    <string name = "create_account">Create Account</string>
+    <string name = "just_a_few_quick">Just a few quick details so your team knows who you are.</string>
+    <string name = "enter_your_email">Enter your email</string>
+    <string name = "enter_your_firstname">Enter your firstname</string>
+    <string name = "enter_your_lastname">Enter your lastname</string>
+    <string name = "select_your_country">Select your country</string>
+    <string name = "enter_password">Enter password</string>
+    <string name = "repeat_password">Repeat password</string>
+    <string name = "choose_the_right_country">Choose the right country for accurate payment processing in your local currency.</string>
+    <string name = "ensure_your_password">Ensure your password has at least 6 characters, mixing letters and numbers for security.</string>
+    <string name = "password_must_match">Your password must match</string>
+    <string name = "continue">Continue</string>
+    <string name = "step_1_2">Step 1/2</string>
+    <string name = "step_2_2">Step 2/2</string>
+
 
 
 
